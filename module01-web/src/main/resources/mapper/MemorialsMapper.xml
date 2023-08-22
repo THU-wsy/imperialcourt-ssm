@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thuwsy.imperialcourt.mapper.MemorialsMapper">
+
+    <select id="selectAllMemorialsDigest" resultType="com.thuwsy.imperialcourt.entity.Memorials">
+        select memorials_id memorialsId, memorials_title memorialsTitle,
+                concat(left(memorials_content, 10), '...') memorialsContentDigest,
+                emp_name memorialsEmpName,
+                memorials_create_time memorialsCreateTime,
+                memorials_status memorialsStatus
+        from t_memorials m left join t_emp e
+        on m.memorials_emp = e.emp_id
+    </select>
+
+    <select id="selectMemorialsById" resultType="com.thuwsy.imperialcourt.entity.Memorials">
+        select memorials_id memorialsId,
+                memorials_title memorialsTitle,
+                memorials_content memorialsContent,
+                emp_name memorialsEmpName,
+                memorials_create_time memorialsCreateTime,
+                memorials_status memorialsStatus,
+                feedback_time feedbackTime,
+                feedback_content feedbackContent
+        from t_memorials m left join t_emp e
+        on m.memorials_emp = e.emp_id
+        where memorials_id = #{memorialsId}
+    </select>
+
+    <update id="updateMemorialsStatusToRead">
+        update t_memorials set memorials_status = 1 where memorials_id = #{memorialsId}
+    </update>
+
+    <update id="updateMemorialsFeedBack">
+        update t_memorials
+        set memorials_status = 2, feedback_content = #{feedbackContent},
+            feedback_time = CURDATE()
+        where memorials_id = #{memorialsId}
+    </update>
+
+
+</mapper>
